@@ -100,12 +100,16 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     add_definitions (-D_USE_MATH_DEFINES)  # match unix behavior of constants in cmath
 endif()
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+
 ### Recurse to the source code
 add_subdirectory(src)
 
 # install
 install(
-        TARGETS implicit-minimal-matching
+        TARGETS implicit-minimal-matcher
         ARCHIVE DESTINATION lib
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib)
