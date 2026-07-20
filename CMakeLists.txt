@@ -10,7 +10,6 @@ message(STATUS "cmake build type: ${CMAKE_BUILD_TYPE}")
 
 ### Configure the compiler
 # This is a basic, decent setup that should do something sane on most compilers
-
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
     # using Clang (linux or apple) or GCC
@@ -65,7 +64,6 @@ endif()
 ### Policy settings
 cmake_policy(SET CMP0054 NEW)   # don't implicitly dereference inside if()
 
-
 ### Process settings
 option(BUILD_SHARED_LIBS "Build the shared library" FALSE)
 if(BUILD_SHARED_LIBS)
@@ -103,6 +101,26 @@ endif()
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+
+### Make sure we use a version of Eigen compatible with C++20
+if(${CMAKE_VERSION} VERSION_LESS 3.11)
+    include(FetchContentLocal)
+else()
+    include(FetchContent)
+endif()
+FetchContent_Declare(
+        Eigen3
+        GIT_REPOSITORY  https://gitlab.com/libeigen/eigen.git
+        GIT_TAG         3.4.0
+        SOURCE_DIR      "${CMAKE_CURRENT_BINARY_DIR}/eigen-src"
+        BINARY_DIR      "${CMAKE_CURRENT_BINARY_DIR}/eigen-build"
+)
+set(EIGEN_BUILD_TESTING   OFF CACHE BOOL "" FORCE)
+set(BUILD_TESTING         OFF CACHE BOOL "" FORCE)
+set(EIGEN_BUILD_DOC       OFF CACHE BOOL "" FORCE)
+set(EIGEN_BUILD_PKGCONFIG OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(Eigen3)
+
 
 ### Recurse to the source code
 add_subdirectory(src)
