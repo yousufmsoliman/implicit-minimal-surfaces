@@ -613,7 +613,9 @@ namespace minimalmatching
     {
         skyscraperConnection_A = HalfedgeData<Vector2>(mesh_A, Vector2{1,0});
         skyscraperConnection_B = HalfedgeData<Vector2>(mesh_B, Vector2{0,1});
-        geometrycentral::Vector<double> curvature_A = areaCurvature_A.raw();
+        geometrycentral::Vector<double> curvature_A = spinCurvature_A.raw();
+        if (options.curvatureAType == CurvatureType::AREA)
+            curvature_A = areaCurvature_A.raw();
 
         Face f_A = mesh_A.face(0);
 
@@ -630,8 +632,9 @@ namespace minimalmatching
             skyscraperConnection_A[ij] = Vector2::fromAngle(s * star_du_A(iIJ));
         }
 
-        geometrycentral::Vector<double> curvature_B = areaCurvature_B.raw();
-        // auto [f_B, b_B] = closestPoint(skyscraper_point, mesh_B, extrinsic_geometry_B.inputVertexPositions.reinterpretTo(mesh_B));
+        geometrycentral::Vector<double> curvature_B = spinCurvature_B.raw();
+        if (options.curvatureBType == CurvatureType::AREA)
+            curvature_B = areaCurvature_B.raw();
 
         Face f_B = mesh_B.face(0);
 
@@ -651,8 +654,15 @@ namespace minimalmatching
         correspondenceConnection_A = skyscraperConnection_A;
         correspondenceConnection_B = skyscraperConnection_B;
 
-        correspondenceCurvature_A = areaCurvature_A;
-        correspondenceCurvature_B = areaCurvature_B;
+        if (options.curvatureAType == CurvatureType::AREA)
+            correspondenceCurvature_A = areaCurvature_A;
+        else
+            correspondenceCurvature_A = spinCurvature_A;
+
+        if (options.curvatureBType == CurvatureType::AREA)
+            correspondenceCurvature_B = areaCurvature_B;
+        else
+            correspondenceCurvature_B = spinCurvature_B;
 
         buildProductConnectionLaplacian();
     }
