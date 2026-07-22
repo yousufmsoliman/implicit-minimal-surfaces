@@ -16,6 +16,9 @@ SET(IMPLICIT_MINIMAL_MATCHING_SRCS
         linebundle/singularity_locator.h
         linebundle/singularity_locator.cpp
 
+        utilities/lbfgs.h
+        utilities/blopex.h
+
         matching/minimal_matching.h
         matching/minimal_matching.cpp
 )
